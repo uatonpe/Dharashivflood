@@ -5,48 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>पूरग्रस्त माहिती फॉर्म</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f7f9; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 20px auto; padding: 30px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e0e0e0; padding-bottom: 20px; }
-        .header h2 { font-size: 1rem; font-weight: 500; color: #555; margin: 0 0 10px 0; }
-        .header h1 { font-size: 1.5rem; font-weight: 700; color: #0056b3; margin: 0; }
-        .form-group { margin-bottom: 20px; position: relative; } /* Autocomplete साठी position: relative आवश्यक */
-        label, legend { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; color: #333; }
-        input[type="text"], input[type="tel"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
-        input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
-        button[type="submit"] { width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
-        button[type="submit"]:disabled { background-color: #a0cfff; cursor: wait; }
-        #status { text-align: center; margin-top: 20px; font-weight: bold; font-size: 1.1rem; }
-        #loader { text-align: center; font-size: 1.2rem; padding: 40px; color: #007bff; }
+        /* Google Fonts - चांगल्या लुकसाठी */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #007bff;
+            --light-grey: #f8f9fa;
+            --border-color: #ced4da;
+            --text-color: #212529;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--light-grey);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid var(--primary-color);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .header h2 {
+            font-size: 0.95rem;
+            font-weight: 400;
+            color: #6c757d;
+            margin: 0 0 10px 0;
+        }
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+        label, legend {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        input[type="text"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus, input[type="tel"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(145deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+        }
+        button[type="submit"]:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+        }
+        button[type="submit"]:disabled {
+            background: #a0cfff;
+            cursor: wait;
+        }
+        #status { text-align: center; margin-top: 20px; font-weight: 600; font-size: 1.05rem; padding: 10px; border-radius: 8px; }
+        #status.success { color: var(--success-color); background-color: #e9f7ec; }
+        #status.error { color: var(--error-color); background-color: #fbebed; }
         .hidden { display: none; }
         
-        /* ******** Autocomplete साठी नवीन CSS ******** */
-        .autocomplete-items {
-            position: absolute;
-            border: 1px solid #d4d4d4;
-            border-bottom: none;
-            border-top: none;
-            z-index: 99;
-            top: 100%;
-            left: 0;
-            right: 0;
-            max-height: 200px;
-            overflow-y: auto;
+        /* --- लोडर (Spinner) साठी CSS --- */
+        #loader { text-align: center; padding: 40px; }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
         }
-        .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            background-color: #fff; 
-            border-bottom: 1px solid #d4d4d4; 
+        #loader-text { font-weight: 600; color: #555; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- Autocomplete साठी CSS --- */
+        .autocomplete-items { position: absolute; border: 1px solid var(--border-color); z-index: 99; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background-color: #fff; border-radius: 0 0 8px 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .autocomplete-items div { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #e9ecef; }
+        .autocomplete-items div:last-child { border-bottom: none; }
+        .autocomplete-items div:hover { background-color: #f1f1f1; }
+
+        /* --- मोबाईलसाठी Responsive Design --- */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px 20px; }
+            .header h1 { font-size: 1.4rem; }
         }
-        .autocomplete-items div:hover {
-            background-color: #e9e9e9; 
-        }
-        .autocomplete-active {
-            background-color: DodgerBlue !important; 
-            color: #ffffff; 
-        }
-        /* ****************************************** */
     </style>
 </head>
 <body>
@@ -55,21 +142,39 @@
             <h2>पर्याय सामाजिक संस्था, सावित्रीबाई फुले म्युच्युअल बेनिफिट ट्रस्ट आणि अनिक फायनान्सीयल सर्व्हिसेस प्रा. लि. यांचे संयुक्त विद्यमाने</h2>
             <h1>धाराशिव जिल्हा – सप्टेंबर 2025 मधील अतिवृष्टीमुळे झालेल्या नुकसानीबाबत माहिती ✅</h1>
         </div>
-        <div id="loader">ग्राहकांची माहिती लोड होत आहे... कृपया प्रतीक्षा करा.</div>
+        
+        <div id="loader">
+            <div class="spinner"></div>
+            <div id="loader-text">ग्राहकांची माहिती लोड होत आहे...</div>
+        </div>
+
         <form id="damageForm" class="hidden" autocomplete="off">
-            <!-- ******** <select> ऐवजी <input> वापरला आहे ******** -->
             <div class="form-group">
                 <label for="customerName">आपले नांव शोधा</label>
-                <input type="text" id="customerName" name="customerName" placeholder="नावाचे पहिले काही अक्षर टाइप करा..." required>
+                <input type="text" id="customerName" name="customerName" placeholder="नावाचे पहिले काही अक्षर टाइप करा..." required disabled>
             </div>
-            <!-- ********************************************** -->
-
             <div class="form-group"> <label for="loanNumber">आपला लोन नंबर</label> <input type="text" id="loanNumber" name="loanNumber" readonly> </div>
             <div class="form-group"> <label for="village">गांव</label> <input type="text" id="village" name="village" readonly> </div>
             <div class="form-group"> <label for="branch">शाखा</label> <input type="text" id="branch" name="branch" readonly> </div>
-            <hr>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
             <div class="form-group"> <label for="mobile">मोबाईल क्रमांक</label> <input type="tel" id="mobile" name="mobile" required> </div>
-            <div class="form-group"> <fieldset> <legend>झालेल्या नुकसानीचा प्रकार...</legend> <!-- सर्व चेकबॉक्स जसे आहेत तसेच राहतील --> <div class="checkbox-group"> <div><input type="checkbox" id="damage1" name="damageType" value="घराची पडझड"><label for="damage1">घराची पडझड</label></div> <div><input type="checkbox" id="damage2" name="damageType" value="पशुधन / जनावरे मृत्यू"><label for="damage2">पशुधन / जनावरे मृत्यू</label></div> <div><input type="checkbox" id="damage3" name="damageType" value="शेती वाहून गेली / खरवडली"><label for="damage3">शेती वाहून गेली / खरवडली</label></div> <div><input type="checkbox" id="damage4" name="damageType" value="पिकाचे नुकसान"><label for="damage4">पिकाचे नुकसान</label></div> <div><input type="checkbox" id="damage5" name="damageType" value="मनुष्यहानी"><label for="damage5">मनुष्यहानी</label></div> <div><input type="checkbox" id="damage6" name="damageType" value="विहीरीत गाळ भरला"><label for="damage6">विहीरीत गाळ भरला</label></div> <div><input type="checkbox" id="damage7" name="damageType" value="व्यवसायाचे नुकसान"><label for="damage7">व्यवसायाचे नुकसान</label></div> <div><input type="checkbox" id="damage8" name="damageType" value="शेती साहित्याचे नुकसान"><label for="damage8">शेती साहित्याचे नुकसान</label></div> <div><input type="checkbox" id="damage9" name="damageType" value="अन्नधान्य नुकसान"><label for="damage9">अन्नधान्य नुकसान</label></div> <div><input type="checkbox" id="damage10" name="damageType" value="मुलांचे शालेय साहित्य नुकसान"><label for="damage10">मुलांचे शालेय साहित्य नुकसान</label></div> </div> </fieldset> </div>
+            <div class="form-group">
+                <fieldset style="border: 1px solid var(--border-color); border-radius: 8px; padding: 15px;">
+                    <legend>झालेल्या नुकसानीचा प्रकार</legend>
+                    <div class="checkbox-group" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage1" name="damageType" value="घराची पडझड" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage1" style="margin-bottom: 0;">घराची पडझड</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage2" name="damageType" value="पशुधन / जनावरे मृत्यू" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage2" style="margin-bottom: 0;">पशुधन / जनावरे मृत्यू</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage3" name="damageType" value="शेती वाहून गेली / खरवडली" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage3" style="margin-bottom: 0;">शेती वाहून गेली / खरवडली</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage4" name="damageType" value="पिकाचे नुकसान" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage4" style="margin-bottom: 0;">पिकाचे नुकसान</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage5" name="damageType" value="मनुष्यहानी" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage5" style="margin-bottom: 0;">मनुष्यहानी</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage6" name="damageType" value="विहीरीत गाळ भरला" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage6" style="margin-bottom: 0;">विहीरीत गाळ भरला</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage7" name="damageType" value="व्यवसायाचे नुकसान" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage7" style="margin-bottom: 0;">व्यवसायाचे नुकसान</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage8" name="damageType" value="शेती साहित्याचे नुकसान" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage8" style="margin-bottom: 0;">शेती साहित्याचे नुकसान</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage9" name="damageType" value="अन्नधान्य नुकसान" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage9" style="margin-bottom: 0;">अन्नधान्य नुकसान</label></div>
+                        <div style="display: flex; align-items: center;"><input type="checkbox" id="damage10" name="damageType" value="मुलांचे शालेय साहित्य नुकसान" style="width: 18px; height: 18px; margin-right: 10px;"><label for="damage10" style="margin-bottom: 0;">मुलांचे शालेय साहित्य नुकसान</label></div>
+                    </div>
+                </fieldset>
+            </div>
             <div class="form-group"> <label for="notes">काही विशेष नोट असल्यास मांडा</label> <textarea id="notes" name="notes" rows="4"></textarea> </div>
             <div class="form-group"> <button type="submit" id="submitBtn">माहिती सबमिट करा</button> </div>
             <div id="status"></div>
@@ -77,8 +182,11 @@
     </div>
 
     <script>
-        // !!!!!! इथे तुमची सर्वात नवीन URL पेस्ट करा !!!!!!
+        // !!!!!! महत्त्वाची सूचना: इथे तुमची सर्वात नवीन Apps Script URL पेस्ट करा !!!!!!
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyx2ElRWHzehTy9buklzfOZtry5MNvqstRx3aS2uDPwWTFdzQfuj5e2or1X-kJm_MjQ/exec"; 
+        
+        const CACHE_KEY = 'customerDataCache';
+        const CACHE_DURATION = 3600 * 1000; // 1 तास (in milliseconds)
 
         const form = document.getElementById('damageForm');
         const loader = document.getElementById('loader');
@@ -90,39 +198,71 @@
         const statusDiv = document.getElementById('status');
         let customerData = [];
 
-        document.addEventListener("DOMContentLoaded", async () => {
+        async function initializeForm() {
+            const cachedData = getCachedData();
+            if (cachedData) {
+                console.log("Loading data from cache...");
+                setupForm(cachedData);
+            } else {
+                 console.log("Cache is empty or expired.");
+            }
+            
             try {
                 const response = await fetch(SCRIPT_URL);
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                customerData = await response.json();
-                loader.classList.add('hidden');
-                form.classList.remove('hidden');
-                // Autocomplete फंक्शन सुरू करा
-                autocomplete(customerNameInput, customerData.map(c => c.name));
-            } catch (error) {
-                loader.textContent = `माहिती लोड करण्यात त्रुटी आली. कृपया Apps Script URL तपासा आणि पेज रीफ्रेश करा.`;
-                loader.style.color = 'red';
-            }
-        });
+                if (!response.ok) throw new Error(`सर्व्हरशी संपर्क होऊ शकला नाही.`);
+                const serverData = await response.json();
+                
+                console.log("Successfully fetched fresh data from server.");
+                setupForm(serverData);
+                setCachedData(serverData);
 
-        // ******** Autocomplete साठी नवीन JavaScript कोड ********
+            } catch (error) {
+                if (!cachedData) {
+                    document.getElementById('loader-text').textContent = `माहिती लोड करण्यात त्रुटी: ${error.message}`;
+                    loader.querySelector('.spinner').style.display = 'none';
+                }
+            }
+        }
+
+        function setupForm(data) {
+            customerData = data;
+            loader.classList.add('hidden');
+            form.classList.remove('hidden');
+            customerNameInput.disabled = false;
+            autocomplete(customerNameInput, customerData.map(c => c.name));
+        }
+
+        function setCachedData(data) {
+            const cache = { timestamp: Date.now(), data: data };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+        }
+
+        function getCachedData() {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (!cached) return null;
+            const cache = JSON.parse(cached);
+            if (Date.now() - cache.timestamp > CACHE_DURATION) {
+                localStorage.removeItem(CACHE_KEY);
+                return null;
+            }
+            return cache.data;
+        }
+        
+        document.addEventListener("DOMContentLoaded", initializeForm);
+
         function autocomplete(inp, arr) {
             let currentFocus;
             inp.addEventListener("input", function(e) {
                 let a, b, i, val = this.value;
                 closeAllLists();
                 if (!val) { return false; }
-                currentFocus = -1;
                 a = document.createElement("DIV");
-                a.setAttribute("id", this.id + "autocomplete-list");
                 a.setAttribute("class", "autocomplete-items");
                 this.parentNode.appendChild(a);
                 for (i = 0; i < arr.length; i++) {
                     if (arr[i].toUpperCase().includes(val.toUpperCase())) {
                         b = document.createElement("DIV");
-                        b.innerHTML = "<strong>" + arr[i].substr(0, arr[i].toUpperCase().indexOf(val.toUpperCase())) + "</strong>";
-                        b.innerHTML += arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase()), val.length);
-                        b.innerHTML += arr[i].substr(arr[i].toUpperCase().indexOf(val.toUpperCase()) + val.length);
+                        b.innerHTML = arr[i].replace(new RegExp(val, "gi"), (match) => `<strong>${match}</strong>`);
                         b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
                         b.addEventListener("click", function(e) {
                             inp.value = this.getElementsByTagName("input")[0].value;
@@ -133,19 +273,11 @@
                     }
                 }
             });
-
             function closeAllLists(elmnt) {
                 const x = document.getElementsByClassName("autocomplete-items");
-                for (let i = 0; i < x.length; i++) {
-                    if (elmnt != x[i] && elmnt != inp) {
-                        x[i].parentNode.removeChild(x[i]);
-                    }
-                }
+                for (let i = 0; i < x.length; i++) { if (elmnt != x[i] && elmnt != inp) { x[i].parentNode.removeChild(x[i]); } }
             }
-
-            document.addEventListener("click", function (e) {
-                closeAllLists(e.target);
-            });
+            document.addEventListener("click", (e) => closeAllLists(e.target));
         }
 
         function fillCustomerDetails(name) {
@@ -158,51 +290,38 @@
                 loanNumberInput.value = ''; villageInput.value = ''; branchInput.value = '';
             }
         }
-        // **********************************************
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // ખાતરી करा की निवडलेले नाव डेटाबेसमधील आहे
             const isValidCustomer = customerData.some(c => c.name === customerNameInput.value);
             if (!isValidCustomer) {
                 statusDiv.textContent = 'कृपया सूचीमधून योग्य ग्राहक निवडा.';
-                statusDiv.style.color = 'orange';
+                statusDiv.className = 'error';
                 return;
             }
-            
             submitBtn.disabled = true;
             statusDiv.textContent = 'माहिती सेव्ह होत आहे...';
-            statusDiv.style.color = '#333';
+            statusDiv.className = '';
 
             const formData = {
-                name: customerNameInput.value,
-                loanNumber: loanNumberInput.value,
-                village: villageInput.value,
-                branch: branchInput.value,
-                mobile: document.getElementById('mobile').value,
-                damages: Array.from(document.querySelectorAll('input[name="damageType"]:checked')).map(cb => cb.value),
-                notes: document.getElementById('notes').value,
+                name: customerNameInput.value, loanNumber: loanNumberInput.value, village: villageInput.value, branch: branchInput.value, mobile: document.getElementById('mobile').value,
+                damages: Array.from(document.querySelectorAll('input[name="damageType"]:checked')).map(cb => cb.value), notes: document.getElementById('notes').value,
             };
 
             try {
                 const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(formData)
+                    method: 'POST', mode: 'cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(formData)
                 });
                 const result = await response.json();
                 if (result.status === "Success") {
                     statusDiv.textContent = 'आपली माहिती यशस्वीरित्या जतन झाली आहे!';
-                    statusDiv.style.color = 'green';
+                    statusDiv.className = 'success';
                     form.reset();
-                } else {
-                    throw new Error(result.message);
-                }
+                    setTimeout(() => { statusDiv.textContent = ''; statusDiv.className = ''; }, 5000); // 5 सेकंदांनी मेसेज काढून टाका
+                } else { throw new Error(result.message); }
             } catch (error) {
                 statusDiv.textContent = `माहिती सबमिट करताना त्रुटी: ${error.message}`;
-                statusDiv.style.color = 'red';
+                statusDiv.className = 'error';
             } finally {
                 submitBtn.disabled = false;
             }

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पूरग्रस्त माहिती फॉर्म</title>
+    <!-- CSS थेट इथेच समाविष्ट केला आहे -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+        }
+        .header h2 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #555;
+            margin: 0 0 10px 0;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0056b3;
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label, legend {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        fieldset {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        .checkbox-group div {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:disabled {
+            background-color: #a0cfff;
+            cursor: wait;
+        }
+        button[type="submit"]:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 30px 0;
+        }
+        #status {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        #loader {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 40px;
+            color: #007bff;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>पर्याय सामाजिक संस्था, सावित्रीबाई फुले म्युच्युअल बेनिफिट ट्रस्ट आणि अनिक फायनान्सीयल सर्व्हिसेस प्रा. लि. यांचे संयुक्त विद्यमाने</h2>
+            <h1>धाराशिव जिल्हा – सप्टेंबर 2025 मधील अतिवृष्टीमुळे झालेल्या नुकसानीबाबत माहिती ✅</h1>
+        </div>
+
+        <div id="loader">ग्राहकांची माहिती लोड होत आहे... कृपया प्रतीक्षा करा.</div>
+
+        <form id="damageForm" class="hidden">
+            <div class="form-group">
+                <label for="customerName">आपले नांव निवडा</label>
+                <select id="customerName" name="customerName" required>
+                    <option value="" disabled selected>--- नाव निवडा ---</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="loanNumber">आपला लोन नंबर</label>
+                <input type="text" id="loanNumber" name="loanNumber" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="village">गांव</label>
+                <input type="text" id="village" name="village" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="branch">शाखा</label>
+                <input type="text" id="branch" name="branch" readonly>
+            </div>
+            
+            <hr>
+
+            <div class="form-group">
+                <label for="mobile">मोबाईल क्रमांक</label>
+                <input type="tel" id="mobile" name="mobile" required>
+            </div>
+
+            <div class="form-group">
+                <fieldset>
+                    <legend>झालेल्या नुकसानीचा प्रकार (एक किंवा अधिक पर्याय निवडा)</legend>
+                    <div class="checkbox-group">
+                        <div><input type="checkbox" id="damage1" name="damageType" value="घराची पडझड"><label for="damage1">घराची पडझड</label></div>
+                        <div><input type="checkbox" id="damage2" name="damageType" value="पशुधन / जनावरे मृत्यू"><label for="damage2">पशुधन / जनावरे मृत्यू</label></div>
+                        <div><input type="checkbox" id="damage3" name="damageType" value="शेती वाहून गेली / खरवडली"><label for="damage3">शेती वाहून गेली / खरवडली</label></div>
+                        <div><input type="checkbox" id="damage4" name="damageType" value="पिकाचे नुकसान"><label for="damage4">पिकाचे नुकसान</label></div>
+                        <div><input type="checkbox" id="damage5" name="damageType" value="मनुष्यहानी"><label for="damage5">मनुष्यहानी</label></div>
+                        <div><input type="checkbox" id="damage6" name="damageType" value="विहीरीत गाळ भरला"><label for="damage6">विहीरीत गाळ भरला</label></div>
+                        <div><input type="checkbox" id="damage7" name="damageType" value="व्यवसायाचे नुकसान"><label for="damage7">व्यवसायाचे नुकसान</label></div>
+                        <div><input type="checkbox" id="damage8" name="damageType" value="शेती साहित्याचे नुकसान"><label for="damage8">शेती साहित्याचे नुकसान</label></div>
+                        <div><input type="checkbox" id="damage9" name="damageType" value="अन्नधान्य नुकसान"><label for="damage9">अन्नधान्य नुकसान</label></div>
+                        <div><input type="checkbox" id="damage10" name="damageType" value="मुलांचे शालेय साहित्य नुकसान"><label for="damage10">मुलांचे शालेय साहित्य नुकसान</label></div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">काही विशेष नोट असल्यास मांडा</label>
+                <textarea id="notes" name="notes" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" id="submitBtn">माहिती सबमिट करा</button>
+            </div>
+            
+            <div id="status"></div>
+        </form>
+    </div>
+
+    <!-- JavaScript थेट इथेच समाविष्ट केला आहे -->
+    <script>
+        // !!!!!! महत्त्वाची सूचना !!!!!!
+        // ही तुमची योग्य URL आहे, जी दोन्ही ठिकाणी वापरली जाईल.
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL5WKA2KKM9pZihupjjTElALc_gv7UZYBfYvwSKOl1C6jt7WWbHWUVmBjkLJ5jT7qa/exec"; 
+
+        const form = document.getElementById('damageForm');
+        const loader = document.getElementById('loader');
+        const customerSelect = document.getElementById('customerName');
+        const loanNumberInput = document.getElementById('loanNumber');
+        const villageInput = document.getElementById('village');
+        const branchInput = document.getElementById('branch');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusDiv = document.getElementById('status');
+
+        let customerData = [];
+
+        // 1. पेज लोड झाल्यावर ग्राहकांची माहिती मागवणे
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // आता ही कमांड योग्य URL वापरेल
+                const response = await fetch(SCRIPT_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                customerData = await response.json();
+                populateDropdown(customerData);
+                loader.classList.add('hidden');
+                form.classList.remove('hidden');
+            } catch (error) {
+                loader.textContent = "ग्राहकांची माहिती लोड करण्यात त्रुटी आली. कृपया पृष्ठ रीफ्रेश करा किंवा इंटरनेट कनेक्शन तपासा.";
+                loader.style.color = 'red';
+                console.error('Error fetching customer data:', error);
+            }
+        });
+
+        // 2. ड्रॉपडाऊनमध्ये ग्राहकांची नावे भरणे (यात बदल नाही)
+        function populateDropdown(customers) {
+            customers.forEach(customer => {
+                let option = document.createElement('option');
+                option.value = customer.name;
+                option.textContent = customer.name;
+                customerSelect.appendChild(option);
+            });
+        }
+
+        // 3. नाव निवडल्यावर बाकीची माहिती आपोआप भरणे (यात बदल नाही)
+        customerSelect.addEventListener('change', function() {
+            const selectedName = this.value;
+            const selectedCustomer = customerData.find(c => c.name === selectedName);
+            if (selectedCustomer) {
+                loanNumberInput.value = selectedCustomer.loanNumber;
+                villageInput.value = selectedCustomer.village;
+                branchInput.value = selectedCustomer.branch;
+            } else {
+                loanNumberInput.value = '';
+                villageInput.value = '';
+                branchInput.value = '';
+            }
+        });
+
+        // 4. फॉर्म सबमिट झाल्यावर डेटा Google Sheet ला पाठवणे
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            statusDiv.textContent = 'माहिती सेव्ह होत आहे...';
+            statusDiv.style.color = '#333';
+
+            const selectedDamages = Array.from(document.querySelectorAll('input[name="damageType"]:checked'))
+                                     .map(checkbox => checkbox.value);
+
+            if (!customerSelect.value || !document.getElementById('mobile').value || selectedDamages.length === 0) {
+                statusDiv.textContent = 'कृपया नाव, मोबाईल क्रमांक आणि नुकसानीचा प्रकार निवडा.';
+                statusDiv.style.color = 'orange';
+                submitBtn.disabled = false;
+                return;
+            }
+
+            const formData = {
+                name: customerSelect.value,
+                loanNumber: loanNumberInput.value,
+                village: villageInput.value,
+                branch: branchInput.value,
+                mobile: document.getElementById('mobile').value,
+                damages: selectedDamages,
+                notes: document.getElementById('notes').value,
+            };
+
+            try {
+                // आता ही कमांड सुद्धा योग्य URL वापरेल
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.status === "Success") {
+                    statusDiv.textContent = 'आपली माहिती यशस्वीरित्या जतन झाली आहे!';
+                    statusDiv.style.color = 'green';
+                    form.reset();
+                    customerSelect.value = '';
+                    loanNumberInput.value = '';
+                    villageInput.value = '';
+                    branchInput.value = '';
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                statusDiv.textContent = 'माहिती सबमिट करताना त्रुटी आली: ' + error.message;
+                statusDiv.style.color = 'red';
+                console.error('Error submitting form:', error);
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
